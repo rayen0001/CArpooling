@@ -35,7 +35,6 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() // Allow access to auth endpoints
                         .requestMatchers("/admin/**").hasRole("ADMIN") // Only ADMIN can access these endpoints
-                        .requestMatchers("/moderator/**").hasRole("MODERATOR") // Only MODERATOR can access these endpoints
                         .anyRequest().authenticated() // Require authentication for all other requests
                 )
                 .sessionManagement(session -> session
@@ -51,9 +50,10 @@ public class SecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:8005")); // Your frontend URL
+        configuration.setAllowedOrigins(List.of("http://localhost:5500")); // Your frontend URL
         configuration.setAllowedMethods(List.of("GET", "POST")); // Allowed HTTP methods
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // Allowed headers
+        configuration.setAllowedHeaders(List.of("*")); // Allow all headers for testing
+        configuration.setAllowCredentials(true); // Allow credentials (like cookies)
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // Apply configuration globally

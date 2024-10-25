@@ -29,8 +29,12 @@ public class User implements UserDetails {
     @Column(nullable = false)
     String fullName;
 
+    @Setter
     @Column(unique = true, length = 100, nullable = false)
     String email;
+
+    @Column(unique = true, length = 100, nullable = false)
+    String company;
 
     @Column(nullable = false)
     String password;
@@ -44,25 +48,17 @@ public class User implements UserDetails {
         this.active = active;
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    List<Ride> rides; // Rides created by the user
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    List<Booking> bookings; // Bookings made by the user
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Feedback> feedbacks = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RideRequest> rideRequests = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Notification> notifications = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RideHistory> rideHistories = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    Role role; // Add this line for the role
+    Role role;
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_vehicle",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "vehicle_id"))
+    List<Vehicle> vehicles = new ArrayList<>();
 
     // Implement UserDetails methods
     @Override
@@ -96,11 +92,6 @@ public class User implements UserDetails {
 
     public String getEmail() {
         return email;
-    }
-
-    public User setEmail(String email) {
-        this.email = email;
-        return this;
     }
 
     public String getPassword() {
