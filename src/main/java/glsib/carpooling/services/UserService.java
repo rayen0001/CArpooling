@@ -1,19 +1,48 @@
 package glsib.carpooling.services;
 
 import glsib.carpooling.entities.User;
+import glsib.carpooling.repositories.UserRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface UserService {
-    List<User> findAll(); // Retrieve all users
+@Service
+public class UserService  {
 
-    User findById(Long id); // Find a user by ID
+    @Autowired
+    private UserRepository userRepository;
 
-    void deactivateUser(Long id); // Deactivate a user
+  
+    public List<User> findAll() {
+        return (List<User>) userRepository.findAll();
+    }
 
-    User save(User user); // Save a new user
+  
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null); // Handle not found case as needed
+    }
 
-    void deleteById(Long id); // Delete a user by ID
+  
+    public void deactivateUser(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        user.ifPresent(u -> {
+            u.setActive(false); // Assuming you have an `active` field in your User entity
+            userRepository.save(u);
+        });
+    }
 
-    // Add other methods as needed (e.g., find by email)
+  
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+  
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+
 }
