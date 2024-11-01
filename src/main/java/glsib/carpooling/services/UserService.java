@@ -25,7 +25,6 @@ public class UserService  {
         return userRepository.findById(id).orElse(null); // Handle not found case as needed
     }
 
-  
     public void deactivateUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         user.ifPresent(u -> {
@@ -34,12 +33,10 @@ public class UserService  {
         });
     }
 
-  
     public User save(User user) {
         return userRepository.save(user);
     }
 
-  
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }

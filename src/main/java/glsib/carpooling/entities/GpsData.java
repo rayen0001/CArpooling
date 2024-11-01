@@ -1,5 +1,6 @@
 package glsib.carpooling.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -17,13 +18,24 @@ public class GpsData {
     Long id;
 
     String imei;
-    Double latitude;
-    Double longitude;
+
+    // Embed the GpsLocation field
+    @Embedded
+    GpsLocation location;
+
     Double speed;
-    LocalDateTime timestamp;
     String status;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "gps_device_id")
     GpsDevice gpsDevice;
+    public LocalDateTime getTimestamp() {
+        return location != null ? location.getTimestamp() : null;
+    }
+    public void setTimestamp(LocalDateTime timestamp) {
+        if (location != null) {
+            location.setTimestamp(timestamp);
+        }
+    }
 }

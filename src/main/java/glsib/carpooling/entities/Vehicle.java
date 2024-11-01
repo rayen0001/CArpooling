@@ -56,7 +56,4 @@ public class Vehicle {
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
     List<Route> routes;
 
-
-    @Embedded
-    GpsLocation location;
 }

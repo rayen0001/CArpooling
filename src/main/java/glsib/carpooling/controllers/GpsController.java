@@ -2,54 +2,59 @@ package glsib.carpooling.controllers;
 
 import glsib.carpooling.entities.GpsData;
 import glsib.carpooling.services.GpsDataService;
+import glsib.carpooling.services.Codec8Decoder; // Import the Codec8Decoder
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate; // Import SimpMessagingTemplate
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/gps")
 public class GpsController {
 
     private final GpsDataService gpsDataService;
+    private final Codec8Decoder codec8Decoder; // Add Codec8Decoder
+    private final SimpMessagingTemplate messagingTemplate; // Add SimpMessagingTemplate
 
     @Autowired
-    public GpsController(GpsDataService gpsDataService) {
+    public GpsController(GpsDataService gpsDataService, Codec8Decoder codec8Decoder, SimpMessagingTemplate messagingTemplate) {
         this.gpsDataService = gpsDataService;
+        this.codec8Decoder = codec8Decoder; // Inject Codec8Decoder
+        this.messagingTemplate = messagingTemplate; // Inject SimpMessagingTemplate
     }
 
-    /**
-     * Endpoint to handle the initial handshake with the GPS device.
-     * Confirms that the server acknowledges the device and is ready to receive data.
-     *
-     * @param imei IMEI identifier for the GPS device
-     * @return ResponseEntity with a success or error message
-     */
     @PostMapping("/handshake")
     public ResponseEntity<String> handleHandshake(@RequestParam String imei) {
         if (imei == null || imei.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid IMEI");
         }
-
-        // Log or perform any specific action needed upon successful handshake
         return ResponseEntity.ok("Handshake successful for device with IMEI: " + imei);
     }
 
-    /**
-     * Endpoint to handle GPS data ingestion from the device.
-     * Validates and stores the incoming GPS data in the database.
-     *
-     * @param gpsData GPS data payload from the device
-     * @return ResponseEntity with a success or error message
-     */
     @PostMapping("/data")
-    public ResponseEntity<String> ingestGpsData(@RequestBody GpsData gpsData) {
-        if (gpsData == null || gpsData.getImei() == null || gpsData.getTimestamp() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid GPS data");
-        }
+    public ResponseEntity<String> ingestGpsData(@RequestBody byte[] rawData) {
+        try {
+            System.out.println("Raw data from the controller: " + Arrays.toString(rawData));
+            GpsData gpsData = codec8Decoder.decodePacket(rawData);
 
-        // Save the GPS data using the service layer
-        gpsDataService.save(gpsData);
-        return ResponseEntity.status(HttpStatus.CREATED).body("GPS data recorded successfully");
+            // Save the GPS data using the service layer
+            gpsDataService.save(gpsData);
+
+            // Send the GPS data to the WebSocket topic
+            try {
+                System.out.println("Sending GPS Data: " + gpsData);
+                messagingTemplate.convertAndSend("/topic/gps-data", gpsData);
+            } catch (Exception e) {
+                System.err.println("Error sending GPS data via WebSocket: " + e.getMessage());
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body("GPS data recorded successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while processing GPS data");
+        }
     }
 }

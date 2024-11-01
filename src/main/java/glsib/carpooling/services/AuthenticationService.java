@@ -53,7 +53,6 @@ public class AuthenticationService {
         logger.info("User successfully registered: {}", savedUser);
         return savedUser;
     }
-
     public User authenticate(LoginUserDto input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
