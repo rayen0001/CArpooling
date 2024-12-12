@@ -16,8 +16,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleException(Exception exception) {
         ProblemDetail errorDetail;
-
-        // Log the stack trace
         exception.printStackTrace();
 
         if (exception instanceof BadCredentialsException) {

@@ -16,16 +16,15 @@ import java.util.Arrays;
 public class GpsController {
 
     private final GpsDataService gpsDataService;
-    private final Codec8Decoder codec8Decoder; // Add Codec8Decoder
-    private final SimpMessagingTemplate messagingTemplate; // Add SimpMessagingTemplate
+    private final Codec8Decoder codec8Decoder;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
     public GpsController(GpsDataService gpsDataService, Codec8Decoder codec8Decoder, SimpMessagingTemplate messagingTemplate) {
         this.gpsDataService = gpsDataService;
-        this.codec8Decoder = codec8Decoder; // Inject Codec8Decoder
-        this.messagingTemplate = messagingTemplate; // Inject SimpMessagingTemplate
+        this.codec8Decoder = codec8Decoder;
+        this.messagingTemplate = messagingTemplate;
     }
-
     @PostMapping("/handshake")
     public ResponseEntity<String> handleHandshake(@RequestParam String imei) {
         if (imei == null || imei.isEmpty()) {
@@ -33,17 +32,13 @@ public class GpsController {
         }
         return ResponseEntity.ok("Handshake successful for device with IMEI: " + imei);
     }
-
     @PostMapping("/data")
     public ResponseEntity<String> ingestGpsData(@RequestBody byte[] rawData) {
         try {
             System.out.println("Raw data from the controller: " + Arrays.toString(rawData));
             GpsData gpsData = codec8Decoder.decodePacket(rawData);
-
-            // Save the GPS data using the service layer
             gpsDataService.save(gpsData);
 
-            // Send the GPS data to the WebSocket topic
             try {
                 System.out.println("Sending GPS Data: " + gpsData);
                 messagingTemplate.convertAndSend("/topic/gps-data", gpsData);
