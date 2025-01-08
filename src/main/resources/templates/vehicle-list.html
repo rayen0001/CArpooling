@@ -19,22 +19,24 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/admin/dashboard}" href="#">Dashboard</a>
+          <a class="nav-link active" th:href="@{/admin}" href="#">Dashboard</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/admin/users}" href="#">Users</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" th:href="@{/admin/vehicles}" href="#">Vehicles</a>
+          <a class="nav-link" th:href="@{/admin/vehicles}" href="#">Vehicles</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/admin/reports}" href="#">Reports</a>
+          <a class="nav-link" th:href="@{/admin/gpsDevices}" href="#">GPS</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/admin/logs}" href="#">Logs</a>
+          <a class="nav-link" th:href="@{/admin/logs}" href="#">logs</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/auth/logout}" href="#">Logout</a>
+          <form action="#" th:action="@{/auth/logout}" method="post" style="display:inline;">
+            <button type="submit" class="nav-link btn btn-link">Logout</button>
+          </form>
         </li>
       </ul>
     </div>
@@ -49,6 +51,7 @@
     <thead>
     <tr>
       <th>Name</th>
+      <th>Supervisor</th>
       <th>Type</th>
       <th>Color</th>
       <th>Registration Number</th>
@@ -62,6 +65,7 @@
     <tbody>
     <tr th:each="vehicle : ${vehicles}">
       <td th:text="${vehicle.name}"></td>
+      <td th:text="${vehicle.user.getFullName()}"></td>
       <td th:text="${vehicle.type}"></td>
       <td th:text="${vehicle.color}"></td>
       <td th:text="${vehicle.registrationNumber}"></td>
@@ -71,9 +75,10 @@
       <td th:text="${vehicle.status}"></td>
       <td>
         <a th:href="@{/admin/vehicles/{id}(id=${vehicle.id})}" class="btn btn-info btn-sm">Details</a>
-        <a th:href="@{/admin/vehicles/{id}(id=${vehicle.id})}" class="btn btn-warning btn-sm">Edit</a>
-        <form th:action="@{/admin/vehicles/{id}(id=${vehicle.id})}" method="post" style="display:inline;">
-          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        <a th:href="@{/admin/vehicles/edit/{id}(id=${vehicle.id})}" class="btn btn-warning btn-sm">Edit</a>
+        <form th:action="@{/admin/vehicles/delete/{id}(id=${vehicle.id})}" method="post" style="display:inline;">
+          <input type="hidden" name="_method" value="delete"/>
+          <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
         </form>
       </td>
     </tr>

@@ -38,4 +38,15 @@ public class GpsData {
             location.setTimestamp(timestamp);
         }
     }
+
+    @Override
+    public String toString() {
+        return "GpsData{" +
+                ", imei='" + imei + '\'' +
+                ", location { " +"Latitude : " + location.getLatitude()+"\n" + ",longitude :"+location.getLongitude()+"}"+
+                ", speed=" + speed +
+                '\'' +
+
+                '}';
+    }
 }

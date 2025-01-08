@@ -53,12 +53,8 @@ public class User implements UserDetails {
     Role role;
 
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_vehicle",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "vehicle_id"))
-    List<Vehicle> vehicles = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vehicle> vehicles = new ArrayList<>();
 
     // Implement UserDetails methods
     @Override

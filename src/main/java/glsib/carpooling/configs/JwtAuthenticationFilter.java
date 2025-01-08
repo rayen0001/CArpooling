@@ -42,13 +42,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String jwt = null;
 
-        // Retrieve JWT from cookies
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("JwtToken".equals(cookie.getName())) { // Ensure this matches the cookie name you set
-                    jwt = cookie.getValue(); // Get the JWT directly without any prefix
-                    break;
+        // Step 1: Check Authorization header for Bearer token
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            jwt = authorizationHeader.substring(7); // Remove "Bearer " prefix
+        }
+
+        // Step 2: Check cookies for JWT if not found in Authorization header
+        if (jwt == null) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("JwtToken".equals(cookie.getName())) { // Ensure this matches the cookie name you set
+                        jwt = cookie.getValue();
+                        break;
+                    }
                 }
             }
         }

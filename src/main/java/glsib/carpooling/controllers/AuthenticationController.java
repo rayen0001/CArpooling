@@ -37,7 +37,7 @@ public class AuthenticationController {
             if ("ADMIN".equalsIgnoreCase(role)) {
                 return "redirect:/admin";
             } else {
-                return "redirect:/home";
+                return "redirect:/unauthorized";
             }
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Invalid username or password");

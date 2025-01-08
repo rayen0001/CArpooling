@@ -10,10 +10,12 @@ import glsib.carpooling.repositories.VehicleRepository;
 import glsib.carpooling.services.UserService;
 import glsib.carpooling.services.VehicleService;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -49,91 +51,6 @@ public class AdminController {
 
         return "admindash";
     }
-
-
-
-    @GetMapping("/users")
-    public String viewUsers(Model model) {
-        Iterable<User> users = userRepository.findAll();
-        model.addAttribute("users", users);
-        return "user-list";
-    }
-
-
-    @GetMapping("/users/{id}")
-    public String viewUser(@PathVariable Long id, Model model) {
-        User user = userRepository.findById(id).orElse(null);
-        model.addAttribute("user", user);
-        return "user-details";
-    }
-
-
-    @DeleteMapping("/users/{id}")
-    public String deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
-        return "redirect:/admin/users";
-    }
-
-
-    @GetMapping("/vehicles")
-    public String viewVehicles(Model model) {
-        List<Vehicle> vehicles = vehicleRepository.findAll();
-        model.addAttribute("vehicles", vehicles);
-        return "vehicle-list";
-    }
-
-
-    @GetMapping("/vehicles/{id}")
-    public String viewVehicle(@PathVariable Long id, Model model) {
-        Vehicle vehicle = vehicleRepository.findById(id).orElse(null);
-        model.addAttribute("vehicle", vehicle);
-        return "vehicle_details";
-    }
-
-
-    @DeleteMapping("/vehicles/{id}")
-    public String deleteVehicle(@PathVariable Long id) {
-        vehicleRepository.deleteById(id);
-        return "redirect:/admin/vehicles";
-    }
-
-
-    @GetMapping("/vehicles/new")
-    public String showCreateVehicleForm(Model model) {
-        model.addAttribute("vehicle", new Vehicle());
-        return "add_vehicle";
-    }
-
-
-    @PostMapping("/vehicles")
-    public String saveVehicle(@ModelAttribute Vehicle vehicle) {
-        vehicleRepository.save(vehicle);
-        return "redirect:/admin/vehicles"; // Redirect to vehicles list
-    }
-
-
-    @GetMapping("/vehicles/edit/{id}")
-    public String showEditVehicleForm(@PathVariable Long id, Model model) {
-        Vehicle vehicle = vehicleRepository.findById(id).orElse(null);
-        model.addAttribute("vehicle", vehicle);
-        return "edit_vehicle";
-    }
-
-
-    @PostMapping("/vehicles/edit")
-    public String updateVehicle(@ModelAttribute Vehicle vehicle) {
-        vehicleRepository.save(vehicle);
-        return "redirect:/admin/vehicles";
-    }
-
-
-    @GetMapping("/vehicles/search")
-    public String searchVehicles(@RequestParam String registrationNumber, Model model) {
-        List<Vehicle> vehicles = vehicleRepository.findByRegistrationNumber(registrationNumber);
-        model.addAttribute("vehicles", vehicles);
-        return "vehicle-list";
-    }
-
 
     @GetMapping("/logs")
     public String viewUserActionLogs(Model model) {

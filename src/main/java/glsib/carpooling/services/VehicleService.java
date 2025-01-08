@@ -1,6 +1,8 @@
 package glsib.carpooling.services;
 
+import glsib.carpooling.entities.User;
 import glsib.carpooling.entities.Vehicle;
+import glsib.carpooling.repositories.UserRepository;
 import glsib.carpooling.repositories.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ public class VehicleService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     // Retrieve all vehicles
     public List<Vehicle> getAllVehicles() {
@@ -41,5 +45,32 @@ public class VehicleService {
 
     public List<Vehicle> getVehiclesByManufacturer(String registrationNumber) {
         return vehicleRepository.findByRegistrationNumber(registrationNumber);
+    }
+    public void assignVehicleToUser(Vehicle vehicle, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        vehicle.setUser(user);
+        vehicleRepository.save(vehicle);
+    }
+    public void updateVehicle(Vehicle updatedVehicle, long userId) {
+        Vehicle existingVehicle = vehicleRepository.findById(updatedVehicle.getId())
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+
+        // Update vehicle details
+        existingVehicle.setName(updatedVehicle.getName());
+        existingVehicle.setType(updatedVehicle.getType());
+        existingVehicle.setColor(updatedVehicle.getColor());
+        existingVehicle.setRegistrationNumber(updatedVehicle.getRegistrationNumber());
+        existingVehicle.setManufacturer(updatedVehicle.getManufacturer());
+        existingVehicle.setModel(updatedVehicle.getModel());
+        existingVehicle.setYear(updatedVehicle.getYear());
+        existingVehicle.setStatus(updatedVehicle.getStatus());
+//        existingVehicle.setUser(updatedVehicle.getUser());
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        existingVehicle.setUser(user);
+
+        vehicleRepository.save(existingVehicle);
     }
 }

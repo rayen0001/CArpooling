@@ -13,4 +13,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     Optional<User> findById(Long id);
 
     void deleteById(Long id);
+
+    boolean existsById(Long id);
 }

@@ -28,7 +28,7 @@
           <a class="nav-link active" th:href="@{/admin/vehicles}" href="#">Vehicles</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/admin/reports}" href="#">Reports</a>
+          <a class="nav-link" th:href="@{/admin/gps}" href="#">GPS</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/admin/logs}" href="#">Logs</a>
@@ -76,6 +76,12 @@
           <option th:value="${vehicle.status}" th:text="${vehicle.status}"></option>
           <option value="Active">Active</option>
           <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <select name="userId" class="form-control" required>
+          <option value="">Select User</option>
+          <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.fullName}"></option>
         </select>
       </div>
       <div class="col-md-4">

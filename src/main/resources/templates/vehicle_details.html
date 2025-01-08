@@ -19,22 +19,24 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/admin/dashboard}" href="#">Dashboard</a>
+          <a class="nav-link active" th:href="@{/admin}" href="#">Dashboard</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/admin/users}" href="#">Users</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" th:href="@{/admin/vehicles}" href="#">Vehicles</a>
+          <a class="nav-link" th:href="@{/admin/vehicles}" href="#">Vehicles</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/admin/reports}" href="#">Reports</a>
+          <a class="nav-link" th:href="@{/admin/gpsDevices}" href="#">GPS</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/admin/logs}" href="#">Logs</a>
+          <a class="nav-link" th:href="@{/admin/logs}" href="#">logs</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/auth/logout}" href="#">Logout</a>
+          <form action="#" th:action="@{/auth/logout}" method="post" style="display:inline;">
+            <button type="submit" class="nav-link btn btn-link">Logout</button>
+          </form>
         </li>
       </ul>
     </div>
@@ -48,6 +50,7 @@
     <div class="card-body">
       <h5 class="card-title" th:text="${vehicle.name}"></h5>
       <p class="card-text"><strong>Type:</strong> <span th:text="${vehicle.type}"></span></p>
+      <p class="card-text"><strong>Supervisor:</strong> <span th:text="${vehicle.user.getFullName()}"></span></p>
       <p class="card-text"><strong>Color:</strong> <span th:text="${vehicle.color}"></span></p>
       <p class="card-text"><strong>Registration Number:</strong> <span th:text="${vehicle.registrationNumber}"></span></p>
       <p class="card-text"><strong>Manufacturer:</strong> <span th:text="${vehicle.manufacturer}"></span></p>

@@ -31,29 +31,14 @@ public class Vehicle {
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
     List<Task> tasks;
 
-    @ManyToMany(mappedBy = "vehicles")
-    List<User> users;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToMany(mappedBy = "vehicles")
     List<Driver> drivers;
 
-    @ManyToMany
-    @JoinTable(
-            name = "geofence_vehicle",
-            joinColumns = @JoinColumn(name = "vehicle_id"),
-            inverseJoinColumns = @JoinColumn(name = "geofence_id"))
-    List<Geofence> geofences;
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    List<FuelConsumption> fuelConsumptions;
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    List<Maintenance> maintenanceRecords;
-
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    List<Event> events;
-
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    List<Route> routes;
 
 }

@@ -4,7 +4,6 @@ import glsib.carpooling.entities.GpsData;
 import glsib.carpooling.entities.GpsDevice;
 import glsib.carpooling.entities.GpsLocation;
 import glsib.carpooling.repositories.GpsDeviceRepository;
-import glsib.carpooling.services.Codec8Decoder;
 import glsib.carpooling.services.GpsDataService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

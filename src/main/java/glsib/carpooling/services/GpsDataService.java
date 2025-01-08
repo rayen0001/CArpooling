@@ -30,6 +30,7 @@ public class GpsDataService {
 
     // Create or update a GPS data record
     public GpsData saveGpsData(GpsData gpsData) {
+        gpsData.setGpsDevice(gpsDeviceRepository.findByImei(gpsData.getImei()).orElse(null));
         return gpsDataRepository.save(gpsData);
     }
 
